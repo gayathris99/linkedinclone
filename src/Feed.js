@@ -8,13 +8,17 @@ import EventNoteIcon from '@material-ui/icons/EventNote'
 import './Feed.css'
 import {firebaseDb} from './firebase'
 import firebase from 'firebase'
+import { useSelector } from 'react-redux';
+import { selectUser } from './features/userSlice';
+import FlipMove from 'react-flip-move';
 
 function Feed() {
   const [posts, setPosts] = useState([])
   const [input, setInput] = useState('')
+  const user = useSelector(selectUser)
 
   useEffect(() => {
-    firebaseDb.collection("posts").onSnapshot((snapshot) => setPosts(
+    firebaseDb.collection("posts").orderBy("timeStamp", "desc").onSnapshot((snapshot) => setPosts(
       snapshot.docs.map((doc) => ({
         id:doc.id,
         data:doc.data()
@@ -25,8 +29,8 @@ function Feed() {
   const sendPost = e => {
     e.preventDefault();
     firebaseDb.collection("posts").add({
-      name: "John Doe",
-      description: "Test",
+      name: user.displayName,
+      description: user.email,
       message: input,
       photoUrl: "",
       timeStamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -50,6 +54,7 @@ function Feed() {
           <InputOption color="#7005f9" title="Event" Icon={EventNoteIcon} />
         </div>
       </div>
+      <FlipMove>
         {posts.map(post => (
           <Post
           key={post.id}
@@ -59,6 +64,7 @@ function Feed() {
           photoUrl={post.data.photoUrl}
            />
         ))}
+        </FlipMove>
     </div>
   )
 }
