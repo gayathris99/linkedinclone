@@ -35,7 +35,11 @@ margin-bottom: 20px;
 }
 
 .feed__input > form > button {
-    display: none;
+    background-color: white;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .feed__inputOptions {
